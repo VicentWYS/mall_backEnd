@@ -113,4 +113,18 @@ public class UserController {
 
         return ApiRestResponse.success();
     }
+
+    /**
+     * 用户退出登录
+     * 核心：去除session中的用户信息
+     *
+     * @param session 暂存登录用户信息
+     * @return ApiRestResponse对象
+     */
+    @PostMapping("/user/logout")
+    @ResponseBody
+    public ApiRestResponse logout(HttpSession session) {
+        session.removeAttribute(Constant.IMOOC_MALL_USER);
+        return ApiRestResponse.success();
+    }
 }
