@@ -5,8 +5,11 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.UserMapper;
 import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.service.UserService;
+import com.imooc.mall.util.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.NoSuchAlgorithmException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,10 +29,17 @@ public class UserServiceImpl implements UserService {
             throw new ImoocMallException(ImoocMallExceptionEnum.NAME_EXISTED);
         }
 
-        // 新用户信息写入数据库
+        // 新用户信息包装为User对象
         User user = new User();
         user.setUsername(userName);
-        user.setPassword(password);
+        // user.setPassword(password);
+        try {
+            user.setPassword(MD5Utils.getMD5Str(password)); // 对密码采用MD5加密
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        // 将User对象写入数据库
         int count = userMapper.insertSelective(user); // 注册一般不全填；返回插入数据成功条数
         if (count == 0) {
             throw new ImoocMallException(ImoocMallExceptionEnum.INSERT_FAILED);
