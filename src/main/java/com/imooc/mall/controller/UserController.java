@@ -127,4 +127,41 @@ public class UserController {
         session.removeAttribute(Constant.IMOOC_MALL_USER);
         return ApiRestResponse.success();
     }
+
+    /**
+     * 管理员登录
+     * 核心：校验身份（1--普通用户，2--管理员）
+     *
+     * @param userName 用户名
+     * @param password 登录密码
+     * @param session  暂存用户对象信息，用于持久登录
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @PostMapping("/adminLogin")
+    @ResponseBody
+    public ApiRestResponse adminLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws ImoocMallException {
+        // 用户名为空
+        if (StringUtils.isEmpty(userName)) {
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_USER_NAME);
+        }
+
+        // 密码为空
+        if (StringUtils.isEmpty(password)) {
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_PASSWORD);
+        }
+
+        // 登录
+        User user = userService.login(userName, password); // 获取该user对象的副本
+        // 校验是否是管理员（1--普通用户，2--管理员）
+        if (userService.checkAdminRole(user)) { // 若是管路员
+            user.setPassword(null); // 不保存密码
+            // 保存登录信息
+            session.setAttribute(Constant.IMOOC_MALL_USER, user); // 参数：key-value
+            return ApiRestResponse.success(user);
+        } else { // 普通用户
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_ADMIN);
+        }
+    }
+
 }

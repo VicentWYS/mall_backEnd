@@ -76,4 +76,11 @@ public class UserServiceImpl implements UserService {
             throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
         }
     }
+
+    // 检查用户身份
+    @Override
+    public boolean checkAdminRole(User user) {
+        // 1--普通用户，2--管理员
+        return user.getRole().equals(2);
+    }
 }

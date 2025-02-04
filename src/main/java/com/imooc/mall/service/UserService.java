@@ -11,4 +11,7 @@ public interface UserService {
     User login(String userName, String password) throws ImoocMallException;
 
     void updateInformation(User user) throws ImoocMallException;
+
+    // 检查用户身份
+    boolean checkAdminRole(User user);
 }
