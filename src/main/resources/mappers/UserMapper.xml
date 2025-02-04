@@ -24,7 +24,14 @@
         select
         <include refid="Base_Column_List"/>
         from imooc_mall_user
-        where username=#{userNamem jdbcType=VARCHAR}
+        where username=#{userName, jdbcType=VARCHAR}
+    </select>
+    <select id="selectLogin" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from imooc_mall_user
+        where userName = #{userName,jdbcType=VARCHAR}
+        and password = #{password, jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
