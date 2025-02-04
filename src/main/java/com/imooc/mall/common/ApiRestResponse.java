@@ -10,9 +10,9 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
  * data: 对象数据
  */
 public class ApiRestResponse<T> {
-    private Integer status;
-    private String msg;
-    private T data;
+    private Integer status;  // 状态码
+    private String msg;  // 状态信息
+    private T data;  // 数据对象
 
     // 文档约定好的特定常量
     private static final int OK_CODE = 10000;
@@ -37,7 +37,7 @@ public class ApiRestResponse<T> {
      * 成功返回 -- 状态码、状态信息
      *
      * @param <T>
-     * @return 统一返回对象
+     * @return ApiRestResponse对象
      */
     public static <T> ApiRestResponse<T> success() {
         return new ApiRestResponse<>();
@@ -48,7 +48,7 @@ public class ApiRestResponse<T> {
      *
      * @param result 对象
      * @param <T>
-     * @return 统一返回对象
+     * @return ApiRestResponse对象
      */
     public static <T> ApiRestResponse<T> success(T result) {
         ApiRestResponse<T> response = new ApiRestResponse<>();
@@ -60,7 +60,7 @@ public class ApiRestResponse<T> {
      * @param code 异常码
      * @param msg  异常信息
      * @param <T>
-     * @return 统一返回对象
+     * @return ApiRestResponse对象
      */
     public static <T> ApiRestResponse<T> error(Integer code, String msg) {
         return new ApiRestResponse<>(code, msg);
@@ -69,9 +69,9 @@ public class ApiRestResponse<T> {
     /**
      * 异常返回
      *
-     * @param ex  异常类枚举对象
+     * @param ex  异常类枚举对象（包含异常码和异常信息）
      * @param <T>
-     * @return 统一返回对象
+     * @return ApiRestResponse对象
      */
     public static <T> ApiRestResponse<T> error(ImoocMallExceptionEnum ex) {
         return new ApiRestResponse<>(ex.getCode(), ex.getMsg());
