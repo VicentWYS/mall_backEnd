@@ -8,6 +8,7 @@ import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.model.request.AddCategoryReq;
 import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ public class CategoryController {
      * @return ApiRestResponse对象
      * @throws ImoocMallException 业务异常
      */
+    @ApiOperation("后台添加商品分类")
     @PostMapping("/admin/category/add")
     @ResponseBody
     public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) throws ImoocMallException {
