@@ -17,6 +17,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void add(AddCategoryReq addCategoryReq) throws ImoocMallException {
+        // 将请求对象“扩充”为商品类对象（使其成为一个完整的商品类对象）
         Category category = new Category();
         BeanUtils.copyProperties(addCategoryReq, category); // 将参数中的对象中属性值复制到新建的这个对象中
 
@@ -32,5 +33,23 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ImoocMallException(ImoocMallExceptionEnum.CREATE_FAILED);
         }
 
+    }
+
+    @Override
+    public void update(Category updateCategory) throws ImoocMallException {
+        // 校验：若需更新类名，则待更新类名与现存类名是否重复
+        if (updateCategory.getName() != null) {
+            Category categoryOld = categoryMapper.selectByName(updateCategory.getName());
+            if (categoryOld != null && !categoryOld.getId().equals(updateCategory.getId())) {
+                // 待更新类名在表中存在 && 两者id不是同一条
+                throw new ImoocMallException(ImoocMallExceptionEnum.NAME_EXISTED);
+            }
+        }
+
+        // 更新数据
+        int count = categoryMapper.updateByPrimaryKeySelective(updateCategory);
+        if (count == 0) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
+        }
     }
 }
