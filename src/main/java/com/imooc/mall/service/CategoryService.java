@@ -9,4 +9,6 @@ public interface CategoryService {
     void add(AddCategoryReq addCategoryReq) throws ImoocMallException;
 
     void update(Category updateCategory) throws ImoocMallException;
+
+    void delete(Integer id) throws ImoocMallException;
 }

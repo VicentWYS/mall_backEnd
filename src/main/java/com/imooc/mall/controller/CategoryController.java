@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -46,7 +47,7 @@ public class CategoryController {
     }
 
     /**
-     * 后台更新商品分类
+     * 更新商品分类
      *
      * @param session           保存登录信息
      * @param updateCategoryReq 包装更新商品分类信息的对象（包含id）
@@ -63,4 +64,17 @@ public class CategoryController {
         return ApiRestResponse.success();
     }
 
+    /**
+     * 删除商品分类
+     *
+     * @param id 商品类id
+     * @return ApiRestResponse对象
+     */
+    @ApiOperation("后台删除商品分类")
+    @PostMapping("/admin/category/delete")
+    @ResponseBody
+    public ApiRestResponse deleteCategory(@RequestParam Integer id) throws ImoocMallException {
+        categoryService.delete(id);
+        return ApiRestResponse.success();
+    }
 }
