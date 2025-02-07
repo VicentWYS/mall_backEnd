@@ -41,42 +41,26 @@ public class CategoryController {
     @PostMapping("/admin/category/add")
     @ResponseBody
     public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) throws ImoocMallException {
-        // 校验：需有人登录
-        User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
-        if (currentUser == null) {
-            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_LOGIN);
-        }
-
-        // 校验：登录人需是管理员
-        boolean adminRole = userService.checkAdminRole(currentUser);
-        if (adminRole) { // 若是管理员
-            categoryService.add(addCategoryReq); // 插入数据
-            return ApiRestResponse.success(); // 返回成功信息
-        } else {
-            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_ADMIN);
-        }
-
+        categoryService.add(addCategoryReq); // 插入数据
+        return ApiRestResponse.success();
     }
 
-    @ApiOperation("后台更新目录")
+    /**
+     * 后台更新商品分类
+     *
+     * @param session           保存登录信息
+     * @param updateCategoryReq 包装更新商品分类信息的对象（包含id）
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("后台更新商品分类")
     @PostMapping("/admin/category/update")
     @ResponseBody
     public ApiRestResponse updateCategory(HttpSession session, @Valid @RequestBody UpdateCategoryReq updateCategoryReq) throws ImoocMallException {
-        // 校验：需有人登录
-        User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
-        if (currentUser == null) {
-            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_LOGIN);
-        }
-
-        // 校验：登录人需是管理员
-        boolean adminRole = userService.checkAdminRole(currentUser);
-        if (adminRole) { // 若是管理员
-            Category category = new Category();
-            BeanUtils.copyProperties(updateCategoryReq, category);
-            categoryService.update(category); // 更新数据
-            return ApiRestResponse.success(); // 返回成功信息
-        } else {
-            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_ADMIN);
-        }
+        Category category = new Category();
+        BeanUtils.copyProperties(updateCategoryReq, category);
+        categoryService.update(category); // 更新数据
+        return ApiRestResponse.success();
     }
+
 }
