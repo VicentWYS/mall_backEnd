@@ -23,4 +23,7 @@ public interface CategoryMapper {
 
     // 获取所有商品分类，保存到列表返回
     List<Category> selectList();
+
+    // 查询指定父目录id的所有类别
+    List<Category> selectCategoriesByParentId(Integer parentId);
 }

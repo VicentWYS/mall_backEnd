@@ -6,6 +6,7 @@ import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.request.AddCategoryReq;
 import com.imooc.mall.model.request.UpdateCategoryReq;
+import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class CategoryController {
@@ -87,5 +89,20 @@ public class CategoryController {
         // 获取分页结果
         PageInfo pageInfo = categoryService.listForAdmin(pageNum, pageSize);
         return ApiRestResponse.success(pageInfo); // 作为返回对象中的data
+    }
+
+    /**
+     * 获取前台目录列表（给用户）
+     *
+     * @return ApiRestResponse对象
+     */
+    @ApiOperation("获取前台目录列表（给用户）")
+    @PostMapping("/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForCustomer() {
+        // 获取分页结果
+        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer();
+
+        return ApiRestResponse.success(categoryVOS); // 作为返回对象中的data
     }
 }

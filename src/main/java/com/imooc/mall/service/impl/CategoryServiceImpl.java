@@ -7,11 +7,14 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.CategoryMapper;
 import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.request.AddCategoryReq;
+import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -84,6 +87,42 @@ public class CategoryServiceImpl implements CategoryService {
         PageInfo pageInfo = new PageInfo<>(categoryList);
 
         return pageInfo;
+    }
+
+    @Override
+    public List<CategoryVO> listCategoryForCustomer() {
+        // 结果分类列表
+        ArrayList<CategoryVO> categoryVOList = new ArrayList<>();
+
+        // 递归获取商品分类树（自上而下地找）
+        recursivelyFindCategories(categoryVOList, 0); // 对于顶级目录，其父目录id是0
+
+        // 返回一个列表
+        return categoryVOList;
+    }
+
+    /**
+     * 递归获取商品分类结构化数据
+     *
+     * @param categoryVOList CategoryVO类中的一个“口袋”，用于装本分类下的所有子类，后续就是“口袋“装”口袋”
+     * @param parentId       本分类的id（作为待查找子分类的父id）
+     */
+    private void recursivelyFindCategories(List<CategoryVO> categoryVOList, Integer parentId) {
+        // 查询指定父目录id的所有类别对象列表
+        List<Category> categoryList = categoryMapper.selectCategoriesByParentId(parentId);
+
+        // 判断是否是最小子类别（叶节点）
+        if (!CollectionUtils.isEmpty(categoryList)) { // 若不是叶节点
+            for (int i = 0; i < categoryList.size(); i++) { // 遍历当前子类
+                Category category = categoryList.get(i);
+                CategoryVO categoryVO = new CategoryVO();
+                BeanUtils.copyProperties(category, categoryVO);
+                categoryVOList.add(categoryVO);
+
+                // 递归查找子节点
+                recursivelyFindCategories(categoryVO.getChildCategory(), categoryVO.getId());
+            }
+        }
     }
 
 }
