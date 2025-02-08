@@ -3,6 +3,8 @@ package com.imooc.mall.model.dao;
 import com.imooc.mall.model.pojo.Category;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CategoryMapper {
     int deleteByPrimaryKey(Integer id);
@@ -18,4 +20,7 @@ public interface CategoryMapper {
     int updateByPrimaryKey(Category record);
 
     Category selectByName(String name);
+
+    // 获取所有商品分类，保存到列表返回
+    List<Category> selectList();
 }

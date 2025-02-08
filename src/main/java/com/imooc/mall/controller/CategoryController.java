@@ -1,11 +1,9 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
-import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
-import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.pojo.Category;
-import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.model.request.AddCategoryReq;
 import com.imooc.mall.model.request.UpdateCategoryReq;
 import com.imooc.mall.service.CategoryService;
@@ -14,10 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -76,5 +71,21 @@ public class CategoryController {
     public ApiRestResponse deleteCategory(@RequestParam Integer id) throws ImoocMallException {
         categoryService.delete(id);
         return ApiRestResponse.success();
+    }
+
+    /**
+     * 获取后台目录列表（给管理员）
+     *
+     * @param pageNum  本次调用要获取的页码（只拿这一页的内容）
+     * @param pageSize 每页显示记录数
+     * @return ApiRestResponse对象
+     */
+    @ApiOperation("获取后台目录列表（给管理员）")
+    @PostMapping("/admin/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForAdmin(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
+        // 获取分页结果
+        PageInfo pageInfo = categoryService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo); // 作为返回对象中的data
     }
 }

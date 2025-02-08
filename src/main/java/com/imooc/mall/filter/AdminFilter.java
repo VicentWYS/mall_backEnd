@@ -41,7 +41,7 @@ public class AdminFilter implements Filter {
 
         // 校验：需有人登录
         User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
-        if (currentUser == null) {
+        if (currentUser == null) { // 若无人登录
             PrintWriter out = new HttpServletResponseWrapper((HttpServletResponse) servletResponse).getWriter();
             out.write("{\n" +
                     "    \"status\":\"10007\",\n" +
