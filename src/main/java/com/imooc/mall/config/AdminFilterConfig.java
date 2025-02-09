@@ -23,6 +23,7 @@ public class AdminFilterConfig {
         filterRegistrationBean.addUrlPatterns("/admin/category/*"); // 商品分类url前缀
         filterRegistrationBean.addUrlPatterns("/admin/product/*"); // 商品url前缀
         filterRegistrationBean.addUrlPatterns("/admin/order/*"); // 订单url前缀
+        filterRegistrationBean.addUrlPatterns("/admin/upload/*"); // 上传文件url前缀
 
         filterRegistrationBean.setName("adminFilterConf");
         return filterRegistrationBean;

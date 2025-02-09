@@ -11,11 +11,13 @@ import java.util.Date;
 public class AddProductReq {
     @NotNull(message = "商品名称不能为null")
     private String name;
+
     @NotNull(message = "商品图片不能为null")
     private String image;
 
     private String detail;
-    @NotNull(message = "视频分类不能为null")
+
+    @NotNull(message = "商品分类不能为null")
     private Integer categoryId;
 
     @NotNull(message = "商品价格不能为null")
@@ -26,6 +28,7 @@ public class AddProductReq {
     @Max(value = 10000, message = "商品库存不能大于10000")
     private Integer stock;
 
+    @NotNull(message = "商品上架状态不能为null")
     private Integer status;
 
     public String getName() {
