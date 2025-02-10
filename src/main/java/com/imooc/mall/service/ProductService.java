@@ -1,5 +1,6 @@
 package com.imooc.mall.service;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.AddProductReq;
@@ -19,4 +20,6 @@ public interface ProductService {
 
     // 批量上下架商品
     void batchUpdateSellStatus(Integer[] ids, Integer sellStatus);
+
+    PageInfo listForAdmin(Integer pageNum, Integer pageSize);
 }

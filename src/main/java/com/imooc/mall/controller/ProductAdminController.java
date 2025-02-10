@@ -1,5 +1,6 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
@@ -168,5 +169,22 @@ public class ProductAdminController {
         productService.batchUpdateSellStatus(ids, sellStatus);
 
         return ApiRestResponse.success();
+    }
+
+    /**
+     * 后台获取商品列表
+     * 采用分页技术
+     *
+     * @param pageNum  本次调用要获取的页码（只拿这一页的内容）
+     * @param pageSize 每页显示记录数
+     * @return ApiRestResponse对象
+     */
+    @ApiOperation("后台获取商品列表")
+    @PostMapping("/admin/product/list")
+    @ResponseBody
+    public ApiRestResponse list(@RequestParam(name = "pageNum") Integer pageNum, @RequestParam(name = "pageSize") Integer pageSize) {
+        PageInfo pageInfo = productService.listForAdmin(pageNum, pageSize);
+
+        return ApiRestResponse.success(pageInfo);
     }
 }

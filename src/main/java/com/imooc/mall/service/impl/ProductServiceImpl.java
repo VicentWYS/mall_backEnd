@@ -1,14 +1,19 @@
 package com.imooc.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.ProductMapper;
+import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.AddProductReq;
 import com.imooc.mall.service.ProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 商品Service实现类
@@ -77,5 +82,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void batchUpdateSellStatus(Integer[] ids, Integer sellStatus) {
         productMapper.batchUpdateSellStatus(ids, sellStatus);
+    }
+
+    // 后台获取商品列表
+    @Override
+    public PageInfo listForAdmin(Integer pageNum, Integer pageSize) {
+        // 设置分页规则，这里排序的关键字与数据库表中一致
+        PageHelper.startPage(pageNum, pageSize);
+
+        // 获取所有商品分类
+        List<Product> productList = productMapper.selectListForAdmin();
+
+        // 将分类列表包装为一个分页对象
+        PageInfo pageInfo = new PageInfo(productList);
+
+        return pageInfo;
     }
 }
