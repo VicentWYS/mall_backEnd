@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.ProductMapper;
-import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.AddProductReq;
 import com.imooc.mall.service.ProductService;
@@ -97,5 +96,13 @@ public class ProductServiceImpl implements ProductService {
         PageInfo pageInfo = new PageInfo(productList);
 
         return pageInfo;
+    }
+
+    // 获取指定id的商品的详情
+    @Override
+    public Product detail(Integer id) {
+        Product product = productMapper.selectByPrimaryKey(id);
+
+        return product;
     }
 }

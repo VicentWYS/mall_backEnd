@@ -22,4 +22,7 @@ public interface ProductService {
     void batchUpdateSellStatus(Integer[] ids, Integer sellStatus);
 
     PageInfo listForAdmin(Integer pageNum, Integer pageSize);
+
+    // 获取指定id的商品的详情
+    Product detail(Integer id);
 }
