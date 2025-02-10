@@ -14,4 +14,6 @@ public interface ProductService {
 
     // 更新商品
     void update(Product updateProduct) throws ImoocMallException;
+
+    void delete(Integer id) throws ImoocMallException;
 }

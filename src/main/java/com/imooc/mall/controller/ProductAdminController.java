@@ -60,7 +60,7 @@ public class ProductAdminController {
     @ApiOperation("后台上传文件")
     @PostMapping("admin/upload/file")
     @ResponseBody
-    public ApiRestResponse upload(HttpServletRequest httpServletRequest, @RequestParam("file") MultipartFile file) throws ImoocMallException {
+    public ApiRestResponse uploadProduct(HttpServletRequest httpServletRequest, @RequestParam("file") MultipartFile file) throws ImoocMallException {
         // 获取文件后缀（如图片：.jpg）
         String fileName = file.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
@@ -124,13 +124,30 @@ public class ProductAdminController {
     @ApiOperation("后台更新商品")
     @PostMapping("/admin/product/update")
     @ResponseBody
-    public ApiRestResponse update(@Valid @RequestBody UpdateProductReq updateProductReq) throws ImoocMallException {
+    public ApiRestResponse updateProduct(@Valid @RequestBody UpdateProductReq updateProductReq) throws ImoocMallException {
         // 包装成商品类（便于mapper中操作）
         Product product = new Product();
         BeanUtils.copyProperties(updateProductReq, product);
 
         // 更新记录
         productService.update(product);
+
+        return ApiRestResponse.success();
+    }
+
+    /**
+     * 后台删除商品
+     * 慎用删除，业务上多使用将商品下架这种“软删除”方式
+     *
+     * @param id 待删除商品的id
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("后台删除商品")
+    @PostMapping("/admin/product/delete")
+    @ResponseBody
+    public ApiRestResponse deleteProduct(@RequestParam Integer id) throws ImoocMallException {
+        productService.delete(id);
 
         return ApiRestResponse.success();
     }

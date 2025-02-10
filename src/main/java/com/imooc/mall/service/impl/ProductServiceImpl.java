@@ -56,4 +56,19 @@ public class ProductServiceImpl implements ProductService {
             throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
         }
     }
+
+    @Override
+    public void delete(Integer id) throws ImoocMallException {
+        // 查询待删除记录
+        Product productOld = productMapper.selectByPrimaryKey(id);
+        if (productOld == null) { // 不存在要删除的记录，删除失败
+            throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
+        }
+
+        // 删除数据
+        int count = productMapper.deleteByPrimaryKey(id);
+        if (count == 0) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
+        }
+    }
 }
