@@ -1,7 +1,10 @@
 package com.imooc.mall.common;
 
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 /**
  * 存储常量
@@ -20,5 +23,10 @@ public class Constant {
     @Value("${file.upload.dir}") // 从配置文件application.properties中获取属性值
     public void setFileUploadDir(String fileUploadDir) {
         FILE_UPLOAD_DIR = fileUploadDir;
+    }
+
+    // 定义接口：商品查询结果的排序规则
+    public interface ProductListOrderBy {
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price desc", "price asc");
     }
 }

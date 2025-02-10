@@ -100,8 +100,8 @@ public class CategoryController {
     @PostMapping("/category/list")
     @ResponseBody
     public ApiRestResponse listCategoryForCustomer() {
-        // 获取分页结果
-        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer();
+        // 获取分页结果（给前台返回所有目录）
+        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer(0);
 
         return ApiRestResponse.success(categoryVOS); // 作为返回对象中的data
     }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.AddProductReq;
+import com.imooc.mall.model.request.ProductListReq;
 
 /**
  * 商品Service
@@ -25,4 +26,7 @@ public interface ProductService {
 
     // 获取指定id的商品的详情
     Product detail(Integer id);
+
+    // 获取商品列表（根据查询条件）
+    PageInfo list(ProductListReq productListReq);
 }

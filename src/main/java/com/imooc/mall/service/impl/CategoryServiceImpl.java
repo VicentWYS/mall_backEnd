@@ -89,13 +89,19 @@ public class CategoryServiceImpl implements CategoryService {
         return pageInfo;
     }
 
+    /**
+     * 获取指定分类id及其所有子孙的分类id列表
+     *
+     * @param parentId 指定的待查询分类id
+     * @return 分类id列表
+     */
     @Override
-    public List<CategoryVO> listCategoryForCustomer() {
+    public List<CategoryVO> listCategoryForCustomer(Integer parentId) {
         // 结果分类列表
         ArrayList<CategoryVO> categoryVOList = new ArrayList<>();
 
         // 递归获取商品分类树（自上而下地找）
-        recursivelyFindCategories(categoryVOList, 0); // 对于顶级目录，其父目录id是0
+        recursivelyFindCategories(categoryVOList, parentId); // 对于顶级目录，其父目录id是0
 
         // 返回一个列表
         return categoryVOList;
