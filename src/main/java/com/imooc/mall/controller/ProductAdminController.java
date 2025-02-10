@@ -4,9 +4,12 @@ import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
+import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.AddProductReq;
+import com.imooc.mall.model.request.UpdateProductReq;
 import com.imooc.mall.service.ProductService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +37,6 @@ public class ProductAdminController {
     /**
      * 后台添加商品
      *
-     * @param session       保存登录信息
      * @param addProductReq 装新增商品信息的对象
      * @return ApiRestResponse对象
      * @throws ImoocMallException 业务异常
@@ -43,7 +44,7 @@ public class ProductAdminController {
     @ApiOperation("后台添加商品")
     @PostMapping("/admin/product/add")
     @ResponseBody
-    public ApiRestResponse addProduct(HttpSession session, @Valid @RequestBody AddProductReq addProductReq) throws ImoocMallException {
+    public ApiRestResponse addProduct(@Valid @RequestBody AddProductReq addProductReq) throws ImoocMallException {
         productService.add(addProductReq);
         return ApiRestResponse.success();
     }
@@ -111,5 +112,26 @@ public class ProductAdminController {
             effectiveURI = null;
         }
         return effectiveURI;
+    }
+
+    /**
+     * 后台更新商品
+     *
+     * @param updateProductReq 装待更新商品信息的对象
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("后台更新商品")
+    @PostMapping("/admin/product/update")
+    @ResponseBody
+    public ApiRestResponse update(@Valid @RequestBody UpdateProductReq updateProductReq) throws ImoocMallException {
+        // 包装成商品类（便于mapper中操作）
+        Product product = new Product();
+        BeanUtils.copyProperties(updateProductReq, product);
+
+        // 更新记录
+        productService.update(product);
+
+        return ApiRestResponse.success();
     }
 }

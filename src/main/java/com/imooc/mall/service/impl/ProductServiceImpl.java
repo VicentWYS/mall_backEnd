@@ -37,4 +37,23 @@ public class ProductServiceImpl implements ProductService {
             throw new ImoocMallException(ImoocMallExceptionEnum.CREATE_FAILED);
         }
     }
+
+    // 更新商品
+    @Override
+    public void update(Product updateProduct) throws ImoocMallException {
+        // 校验：若需更新商品名，则待更新商品名与现存商品名是否重复
+        if (updateProduct.getName() != null) { // 若待更新记录已存在
+            Product productOld = productMapper.selectByName(updateProduct.getName());
+            if (productOld != null && !productOld.getId().equals(updateProduct.getId())) {
+                // 同名 && 不同id （一对多情况）
+                throw new ImoocMallException(ImoocMallExceptionEnum.NAME_EXISTED);
+            }
+        }
+
+        // 更新数据
+        int count = productMapper.updateByPrimaryKeySelective(updateProduct);
+        if (count == 0) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
+        }
+    }
 }
