@@ -1,6 +1,7 @@
 package com.imooc.mall.model.dao;
 
 import com.imooc.mall.model.pojo.Product;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,5 +20,8 @@ public interface ProductMapper {
 
     // 通过商品名查找商品是否存在
     Product selectByName(String name);
+
+    // 批量上下架
+    int batchUpdateSellStatus(@Param("ids") Integer[] ids, @Param("sellStatus") Integer sellStatus);
 
 }

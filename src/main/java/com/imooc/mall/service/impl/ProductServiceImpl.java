@@ -57,6 +57,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    // 删除商品
     @Override
     public void delete(Integer id) throws ImoocMallException {
         // 查询待删除记录
@@ -70,5 +71,11 @@ public class ProductServiceImpl implements ProductService {
         if (count == 0) {
             throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
         }
+    }
+
+    // 批量上下架商品
+    @Override
+    public void batchUpdateSellStatus(Integer[] ids, Integer sellStatus) {
+        productMapper.batchUpdateSellStatus(ids, sellStatus);
     }
 }

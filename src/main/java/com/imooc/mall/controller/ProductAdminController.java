@@ -151,4 +151,22 @@ public class ProductAdminController {
 
         return ApiRestResponse.success();
     }
+
+    /**
+     * 后台批量上下架商品
+     * 即批量修改商品的上下架状态
+     *
+     * @param ids        需要修改上下架的商品id数组
+     * @param sellStatus 需要修改成为的上下架状态
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("后台批量上下架商品")
+    @PostMapping("/admin/product/batchUpdateSellStatus")
+    @ResponseBody
+    public ApiRestResponse batchUpdateSellStatus(@RequestParam(name = "ids") Integer[] ids, @RequestParam(name = "sellStatus") Integer sellStatus) {
+        productService.batchUpdateSellStatus(ids, sellStatus);
+
+        return ApiRestResponse.success();
+    }
 }
