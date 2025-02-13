@@ -26,6 +26,25 @@ public class CartServiceImpl implements CartService {
     CartMapper cartMapper;
 
     /**
+     * 获取购物车商品列表
+     *
+     * @param userId 当前用户id
+     * @return 该购物车中的商品列表
+     */
+    @Override
+    public List<CartVO> list(Integer userId) {
+        // 获取购物车商品列表
+        List<CartVO> cartVOS = cartMapper.selectList(userId);
+
+        // 计算每条记录中的商品总价
+        for (int i = 0; i < cartVOS.size(); i++) {
+            CartVO cartVO = cartVOS.get(i); // 这里是引用类型，指向的是cartVOS中的这个元素对象
+            cartVO.setTotalPrice(cartVO.getPrice() * cartVO.getQuantity());
+        }
+        return cartVOS;
+    }
+
+    /**
      * 购物车添加商品
      * 返回购物车中的商品列表
      *
@@ -54,15 +73,15 @@ public class CartServiceImpl implements CartService {
             // 商品已在购物车中，只需叠加数量
             count = cart.getQuantity() + count;
             Cart cartNew = new Cart();
-            cart.setId(cart.getId());
-            cart.setProductId(productId); // 商品id
-            cart.setUserId(userId); // 用户id
-            cart.setQuantity(count); // 商品数量
-            cart.setSelected(Constant.Cart.CHECKED); // 默认为选中（既然已经要添加商品了，自然认为用户选中该商品）
+            cartNew.setId(cart.getId());
+            cartNew.setProductId(productId); // 商品id
+            cartNew.setUserId(userId); // 用户id
+            cartNew.setQuantity(count); // 商品数量
+            cartNew.setSelected(Constant.Cart.CHECKED); // 默认为选中（既然已经要添加商品了，自然认为用户选中该商品）
             cartMapper.updateByPrimaryKeySelective(cartNew);
         }
 
-        return null;
+        return this.list(userId);
     }
 
     // 检验指定商品是否满足添加购物车条件
@@ -71,6 +90,11 @@ public class CartServiceImpl implements CartService {
         Product product = productMapper.selectByPrimaryKey(productId);
         if (product == null || product.getStatus().equals(Constant.SaleStatus.NOT_SALE)) {
             throw new ImoocMallException(ImoocMallExceptionEnum.NOT_SALE); // 该商品不存在或已下架
+        }
+
+        // 判断商品数量是否合法
+        if (count <= 0) { // 购物车中商品数量至少为1件
+            throw new ImoocMallException(ImoocMallExceptionEnum.REQUEST_PARAM_ERROR);
         }
 
         // 判断商品库存
