@@ -7,6 +7,7 @@ import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.model.vo.CartVO;
 import com.imooc.mall.service.CartService;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,6 +102,27 @@ public class CartController {
 
         // 为指定购物车尝试添加商品
         List<CartVO> cartVOS = cartService.delete(userId, productId);
+
+        return ApiRestResponse.success(cartVOS);
+    }
+
+    /**
+     * 选中/不选中购物车中某个商品
+     *
+     * @param productId 指定商品的id
+     * @param selected  选中/不选中状态
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("选中/不选中购物车中某商品")
+    @PostMapping("/cart/select")
+    @ResponseBody
+    public ApiRestResponse select(@RequestParam("productId") Integer productId, @Param("selected") Integer selected) throws ImoocMallException {
+        // 验证用户登录（UserFilter）【不能从参数传入userId,cartId】
+        int userId = UserFilter.currentUser.getId(); // 从过滤器中获取登录用户信息
+
+        // 为指定购物车尝试添加商品
+        List<CartVO> cartVOS = cartService.selectOrNot(userId, productId, selected);
 
         return ApiRestResponse.success(cartVOS);
     }

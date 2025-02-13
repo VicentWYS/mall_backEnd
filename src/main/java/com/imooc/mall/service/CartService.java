@@ -17,4 +17,6 @@ public interface CartService {
     List<CartVO> update(Integer userId, Integer productId, Integer count) throws ImoocMallException;
 
     List<CartVO> delete(Integer userId, Integer productId) throws ImoocMallException;
+
+    List<CartVO> selectOrNot(Integer userId, Integer productId, Integer selected) throws ImoocMallException;
 }

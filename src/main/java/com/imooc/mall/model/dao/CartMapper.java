@@ -26,4 +26,7 @@ public interface CartMapper {
 
     // 查询指定【用户】的购物车中是否存在某个【商品】
     Cart selectCartByUserIdAndProductId(@Param("userId") Integer userId, @Param("productId") Integer productId);
+
+    // 将购物车中某商品设置为：选中/不选中
+    Integer selectOrNot(@Param("userId") Integer userId, @Param("productId") Integer productId, @Param("selected") Integer selected);
 }
