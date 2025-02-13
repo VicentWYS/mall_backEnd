@@ -170,4 +170,20 @@ public class CartServiceImpl implements CartService {
 
         return this.list(userId);
     }
+
+    /**
+     * 改变所有商品的选中状态
+     *
+     * @param userId   用户id
+     * @param selected 要设置成为的选中状态
+     * @return 购物车现存商品列表
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public List<CartVO> selectAllOrNot(Integer userId, Integer selected) throws ImoocMallException {
+        // 改变所有商品的选中状态
+        cartMapper.selectOrNot(userId, null, selected); // 将product_id设为null,mapper中会将所有商品都设为指定选中状态
+
+        return this.list(userId);
+    }
 }

@@ -19,4 +19,6 @@ public interface CartService {
     List<CartVO> delete(Integer userId, Integer productId) throws ImoocMallException;
 
     List<CartVO> selectOrNot(Integer userId, Integer productId, Integer selected) throws ImoocMallException;
+
+    List<CartVO> selectAllOrNot(Integer userId, Integer selected) throws ImoocMallException;
 }

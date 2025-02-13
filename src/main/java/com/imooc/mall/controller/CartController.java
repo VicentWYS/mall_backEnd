@@ -126,4 +126,24 @@ public class CartController {
 
         return ApiRestResponse.success(cartVOS);
     }
+
+    /**
+     * 全选中/全不选中购物车中某商品
+     *
+     * @param selected 要设置成为的选中状态
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("全选中/全不选中购物车中某商品")
+    @PostMapping("/cart/selectAllOrNot")
+    @ResponseBody
+    public ApiRestResponse selectAllOrNot(@Param("selected") Integer selected) throws ImoocMallException {
+        // 验证用户登录（UserFilter）【不能从参数传入userId,cartId】
+        int userId = UserFilter.currentUser.getId(); // 从过滤器中获取登录用户信息
+
+        // 将所有商品设置为统一的选中/不选中状态
+        List<CartVO> cartVOS = cartService.selectAllOrNot(userId, selected);
+
+        return ApiRestResponse.success(cartVOS);
+    }
 }
