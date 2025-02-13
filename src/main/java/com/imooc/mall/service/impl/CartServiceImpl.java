@@ -102,4 +102,27 @@ public class CartServiceImpl implements CartService {
             throw new ImoocMallException(ImoocMallExceptionEnum.NOT_ENOUGH);
         }
     }
+
+    @Override
+    public List<CartVO> update(Integer userId, Integer productId, Integer count) throws ImoocMallException {
+        // 检验指定商品是否满足添加购物车条件
+        validProduct(productId, count);
+
+        // 该商品是否之前就在购物车中
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if (cart == null) { // 若购物车中没有该商品，抛出异常
+            throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
+        } else {
+            // 若商品已在购物车中，则更新数量
+            Cart cartNew = new Cart();
+            cartNew.setId(cart.getId());
+            cartNew.setProductId(productId); // 商品id
+            cartNew.setUserId(userId); // 用户id
+            cartNew.setQuantity(count); // 商品数量（该方法的核心）
+            cartNew.setSelected(Constant.Cart.CHECKED); // 默认为选中（既然已经要添加商品了，自然认为用户选中该商品）
+            cartMapper.updateByPrimaryKeySelective(cartNew);
+        }
+
+        return this.list(userId);
+    }
 }

@@ -62,4 +62,26 @@ public class CartController {
 
         return ApiRestResponse.success(cartVOS);
     }
+
+    /**
+     * 更新购物车
+     * 核心是更新商品数量
+     *
+     * @param productId （待更新）商品id
+     * @param count     （待更新）商品数量（主要更新目标）
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("更新购物车")
+    @PostMapping("/cart/update")
+    @ResponseBody
+    public ApiRestResponse update(@RequestParam("productId") Integer productId, @RequestParam("count") Integer count) throws ImoocMallException {
+        // 验证用户登录（UserFilter）
+        int userId = UserFilter.currentUser.getId(); // 从过滤器中获取登录用户信息
+
+        // 为指定购物车尝试添加商品
+        List<CartVO> cartVOS = cartService.update(userId, productId, count);
+
+        return ApiRestResponse.success(cartVOS);
+    }
 }
