@@ -125,4 +125,26 @@ public class CartServiceImpl implements CartService {
 
         return this.list(userId);
     }
+
+    /**
+     * 删除购物车指定商品记录
+     *
+     * @param userId    用户id
+     * @param productId 商品id
+     * @return 购物车现存商品列表
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public List<CartVO> delete(Integer userId, Integer productId) throws ImoocMallException {
+        // 该商品是否之前就在购物车中
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if (cart == null) { // 若购物车中没有该商品，抛出异常
+            throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
+        } else {
+            // 若商品已在购物车中，则可以删除这条商品记录
+            cartMapper.deleteByPrimaryKey(cart.getId()); // 根据Cart的id属性定位
+        }
+
+        return this.list(userId);
+    }
 }

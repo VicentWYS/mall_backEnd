@@ -84,4 +84,24 @@ public class CartController {
 
         return ApiRestResponse.success(cartVOS);
     }
+
+    /**
+     * 删除购物车指定商品记录
+     *
+     * @param productId 待删除商品id
+     * @return ApiRestResponse对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("删除购物车指定商品记录")
+    @PostMapping("/cart/delete")
+    @ResponseBody
+    public ApiRestResponse delete(@RequestParam("productId") Integer productId) throws ImoocMallException {
+        // 验证用户登录（UserFilter）【不能从参数传入userId,cartId】
+        int userId = UserFilter.currentUser.getId(); // 从过滤器中获取登录用户信息
+
+        // 为指定购物车尝试添加商品
+        List<CartVO> cartVOS = cartService.delete(userId, productId);
+
+        return ApiRestResponse.success(cartVOS);
+    }
 }
