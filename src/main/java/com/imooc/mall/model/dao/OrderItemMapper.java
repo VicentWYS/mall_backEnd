@@ -3,6 +3,8 @@ package com.imooc.mall.model.dao;
 import com.imooc.mall.model.pojo.OrderItem;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface OrderItemMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,4 +18,7 @@ public interface OrderItemMapper {
     int updateByPrimaryKeySelective(OrderItem record);
 
     int updateByPrimaryKey(OrderItem record);
+
+    // 根据订单号查询所有商品记录
+    List<OrderItem> selectByOrderNo(String orderNo);
 }

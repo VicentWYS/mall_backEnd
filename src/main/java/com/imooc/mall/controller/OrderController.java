@@ -3,13 +3,12 @@ package com.imooc.mall.controller;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.model.request.CreateOrderReq;
+import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class OrderController {
@@ -28,5 +27,20 @@ public class OrderController {
     public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq) throws ImoocMallException {
         String orderNo = orderService.create(createOrderReq);
         return ApiRestResponse.success(orderNo);
+    }
+
+    /**
+     * 获取订单及订单详情
+     *
+     * @param orderNo 订单号
+     * @return 订单及订单详情对象orderVO
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("获取订单及订单详情")
+    @GetMapping("/order/detail")
+    @ResponseBody
+    public ApiRestResponse detail(@RequestParam String orderNo) throws ImoocMallException {
+        OrderVO orderVO = orderService.detail(orderNo);
+        return ApiRestResponse.success(orderVO);
     }
 }

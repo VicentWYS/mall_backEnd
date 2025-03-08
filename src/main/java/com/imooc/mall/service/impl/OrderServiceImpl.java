@@ -13,9 +13,12 @@ import com.imooc.mall.model.pojo.OrderItem;
 import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.CreateOrderReq;
 import com.imooc.mall.model.vo.CartVO;
+import com.imooc.mall.model.vo.OrderItemVO;
+import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.CartService;
 import com.imooc.mall.service.OrderService;
 import com.imooc.mall.util.OrderCodeFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,6 +211,62 @@ public class OrderServiceImpl implements OrderService {
                 throw new ImoocMallException(ImoocMallExceptionEnum.NOT_ENOUGH);
             }
         }
+    }
+
+    /**
+     * 根据订单号查询订单及订单详情
+     *
+     * @param orderNo 订单号
+     * @return 订单及订单详情对象 orderVO
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public OrderVO detail(String orderNo) throws ImoocMallException {
+        // 查询某个订单
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+
+        // 校验该订单是否属于当前用户
+        Integer userId = UserFilter.currentUser.getId();
+        if (!order.getUserId().equals(userId)) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+
+        // 某订单对象 --> 订单详情中的所有商品 --> OrderVO对象
+        OrderVO orderVO = getOrderVO(order);
+
+        return orderVO;
+    }
+
+    /**
+     * 某订单对象 --> 订单详情中的所有商品 --> OrderVO对象
+     * order --> orderItemList --> orderItemVOList --> orderVO
+     *
+     * @param order 订单对象
+     * @return OrderVO对象
+     */
+    private OrderVO getOrderVO(Order order) throws ImoocMallException {
+        OrderVO orderVO = new OrderVO();
+
+        // 复制大部分相同的属性
+        BeanUtils.copyProperties(order, orderVO);
+
+        // 设置订单的orderItemVOList（从订单详情表查出并赋值）
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
+        List<OrderItemVO> orderItemVOList = new ArrayList<>();
+        for (OrderItem orderItem : orderItemList) {
+            OrderItemVO orderItemVO = new OrderItemVO();
+            BeanUtils.copyProperties(orderItem, orderItemVO);
+            orderItemVOList.add(orderItemVO);
+        }
+        orderVO.setOrderItemVOList(orderItemVOList);
+
+        // 设置订单状态名称
+        orderVO.setOrderStatusName(Constant.OrderStatusEnum.codeOf(orderVO.getOrderStatus()).getValue());
+
+        return orderVO;
     }
 
 }
