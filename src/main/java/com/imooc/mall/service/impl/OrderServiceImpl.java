@@ -18,6 +18,7 @@ import com.imooc.mall.service.OrderService;
 import com.imooc.mall.util.OrderCodeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class OrderServiceImpl implements OrderService {
      * @return 订单号（String）
      * @throws ImoocMallException 业务异常
      */
+    @Transactional(rollbackFor = Exception.class) // 数据库遇到任何异常都会回滚，撤回本次的所有操作
     @Override
     public String create(CreateOrderReq createOrderReq) throws ImoocMallException {
         // 拿到当前用户id
