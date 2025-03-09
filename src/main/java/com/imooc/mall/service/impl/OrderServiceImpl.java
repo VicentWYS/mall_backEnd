@@ -1,5 +1,7 @@
 package com.imooc.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -244,7 +246,7 @@ public class OrderServiceImpl implements OrderService {
      * 某订单对象 --> 订单详情中的所有商品 --> OrderVO对象
      * order --> orderItemList --> orderItemVOList --> orderVO
      *
-     * @param order 订单对象
+     * @param order Order对象
      * @return OrderVO对象
      */
     private OrderVO getOrderVO(Order order) throws ImoocMallException {
@@ -267,6 +269,51 @@ public class OrderServiceImpl implements OrderService {
         orderVO.setOrderStatusName(Constant.OrderStatusEnum.codeOf(orderVO.getOrderStatus()).getValue());
 
         return orderVO;
+    }
+
+    /**
+     * 获取指定用户的全部订单
+     *
+     * @param pageNum  分页：当前页码
+     * @param pageSize 分页：每页显示的记录数
+     * @return 分页对象
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public PageInfo listForCustomer(Integer pageNum, Integer pageSize) throws ImoocMallException {
+        // 获取指定用户id的Order列表
+        Integer userId = UserFilter.currentUser.getId();
+        PageHelper.startPage(pageNum, pageSize);
+
+        // Order列表 --> OrderVO列表
+        List<Order> orderList = orderMapper.selectForCustomer(userId); // 只包含当前页的数据
+        if (orderList == null || orderList.isEmpty()) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+        List<OrderVO> orderVOList = orderListToOrderVOList(orderList);
+
+        // 包装为PageInfo对象
+        PageInfo pageInfo = new PageInfo<>(orderList); // orderVOList 覆盖默认的orderList
+        pageInfo.setList(orderVOList);
+
+        return pageInfo;
+    }
+
+    /**
+     * 订单列表 --> 订单VO列表
+     * OrderList --> OrderVOList
+     *
+     * @param orderList 订单列表
+     * @return 订单VO列表
+     * @throws ImoocMallException 业务异常
+     */
+    private List<OrderVO> orderListToOrderVOList(List<Order> orderList) throws ImoocMallException {
+        List<OrderVO> orderVOList = new ArrayList<>();
+        for (Order order : orderList) {
+            OrderVO orderVO = getOrderVO(order);
+            orderVOList.add(orderVO);
+        }
+        return orderVOList;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.model.request.CreateOrderReq;
@@ -42,5 +43,22 @@ public class OrderController {
     public ApiRestResponse detail(@RequestParam String orderNo) throws ImoocMallException {
         OrderVO orderVO = orderService.detail(orderNo);
         return ApiRestResponse.success(orderVO);
+    }
+
+    /**
+     * 获取订单列表
+     *
+     * @param pageNum  分页：当前页码
+     * @param pageSize 分页：每页显示的记录数
+     * @return 分页对象
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("获取订单列表")
+    @GetMapping("/order/list")
+    @ResponseBody
+    public ApiRestResponse list(@RequestParam Integer pageNum, @RequestParam Integer pageSize) throws ImoocMallException {
+        PageInfo pageInfo = orderService.listForCustomer(pageNum, pageSize);
+
+        return ApiRestResponse.success(pageInfo);
     }
 }
