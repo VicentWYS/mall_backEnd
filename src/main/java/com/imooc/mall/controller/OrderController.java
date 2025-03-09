@@ -61,4 +61,21 @@ public class OrderController {
 
         return ApiRestResponse.success(pageInfo);
     }
+
+    /**
+     * 用户取消订单
+     * 只是改变订单状态，不删除记录
+     *
+     * @param orderNo 待取消的订单号
+     * @return 空
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("用户取消订单")
+    @PostMapping("/order/cancel")
+    @ResponseBody
+    public ApiRestResponse cancel(@RequestParam String orderNo) throws ImoocMallException {
+        orderService.cancel(orderNo);
+
+        return ApiRestResponse.success();
+    }
 }

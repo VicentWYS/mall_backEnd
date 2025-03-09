@@ -21,4 +21,7 @@ public interface OrderService {
 
     // 获取指定用户的全部订单
     PageInfo listForCustomer(Integer pageNum, Integer pageSize) throws ImoocMallException;
+
+    // 用户取消订单
+    void cancel(String orderNo) throws ImoocMallException;
 }

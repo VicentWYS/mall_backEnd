@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -316,4 +317,35 @@ public class OrderServiceImpl implements OrderService {
         return orderVOList;
     }
 
+    /**
+     * 用户取消订单
+     * 只是改变订单状态，不删除记录
+     *
+     * @param orderNo 订单号
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public void cancel(String orderNo) throws ImoocMallException {
+        // 根据订单号查询订单
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+
+        // 验证用户身份
+        Integer userId = UserFilter.currentUser.getId();
+        if (!order.getUserId().equals(userId)) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+
+        // 验证订单状态（定义：只有未付款才能取消订单）
+        if (order.getOrderStatus().equals(Constant.OrderStatusEnum.NOT_PAID.getCode())) {
+            // 改变订单状态
+            order.setOrderStatus(Constant.OrderStatusEnum.CANCELED.getCode()); // 变为“用户已取消”
+            order.setEndTime(new Date()); // 改变交易完成时间
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS); // 订单状态不符
+        }
+    }
 }
