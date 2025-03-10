@@ -1,6 +1,7 @@
 package com.imooc.mall.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.google.zxing.WriterException;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.model.request.CreateOrderReq;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Controller
 public class OrderController {
@@ -77,5 +80,19 @@ public class OrderController {
         orderService.cancel(orderNo);
 
         return ApiRestResponse.success();
+    }
+
+    /**
+     * 生成支付二维码
+     *
+     * @param orderNo 订单号
+     * @return 二维码图片在项目中的地址
+     */
+    @ApiOperation("生成支付二维码")
+    @PostMapping("/order/qrcode")
+    @ResponseBody
+    public ApiRestResponse qrcode(@RequestParam String orderNo) throws ImoocMallException, IOException, WriterException {
+        String qrcodeAddress = orderService.qrcode(orderNo);
+        return ApiRestResponse.success(qrcodeAddress);
     }
 }

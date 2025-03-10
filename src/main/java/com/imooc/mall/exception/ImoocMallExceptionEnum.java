@@ -26,6 +26,7 @@ public enum ImoocMallExceptionEnum {
     NO_ORDER(10020, "订单不存在"),
     NOT_YOUR_ORDER(10021, "订单不属于当前用户"),
     WRONG_ORDER_STATUS(10022, "订单状态不符"),
+    QRCODE_FAILED(10023, "二维码生成失败"),
     SYSTEM_ERROR(20000, "系统异常");
 
     Integer code; // 异常码

@@ -1,11 +1,13 @@
 package com.imooc.mall.service;
 
 import com.github.pagehelper.PageInfo;
+import com.google.zxing.WriterException;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.model.request.CreateOrderReq;
 import com.imooc.mall.model.vo.CartVO;
 import com.imooc.mall.model.vo.OrderVO;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -24,4 +26,7 @@ public interface OrderService {
 
     // 用户取消订单
     void cancel(String orderNo) throws ImoocMallException;
+
+    // 生成订单支付的二维码图片
+    String qrcode(String orderNo) throws ImoocMallException, IOException, WriterException;
 }

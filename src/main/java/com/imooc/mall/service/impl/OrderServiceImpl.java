@@ -2,6 +2,7 @@ package com.imooc.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.zxing.WriterException;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -20,12 +21,18 @@ import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.CartService;
 import com.imooc.mall.service.OrderService;
 import com.imooc.mall.util.OrderCodeFactory;
+import com.imooc.mall.util.QRCodeGenerator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +53,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderItemMapper orderItemMapper;
+
+    @Value("${file.upload.ip}")
+    String ip;
 
     /**
      * 生成订单
@@ -347,5 +357,58 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS); // 订单状态不符
         }
+    }
+
+    /**
+     * 生成订单支付的二维码
+     *
+     * @param orderNo 订单编号
+     * @return 二维码图片访问链接
+     */
+    @Override
+    public String qrcode(String orderNo) throws ImoocMallException {
+        // 校验订单号
+        if (orderNo == null || orderNo.trim().isEmpty()) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+
+        // 根据订单号查询订单
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+
+        // 验证用户身份
+        Integer userId = UserFilter.currentUser.getId();
+        if (!order.getUserId().equals(userId)) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+
+        // 获取当前请求的上下文
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        // 获取当前的 HttpServletRequest 对象
+        HttpServletRequest request = attributes.getRequest();
+
+        // 获得 ip + 端口号
+        String address = ip + ":" + request.getLocalPort();
+
+        // 构造支付链接，格式为 "http://ip:port/pay?orderNo=xxx"，该链接作为支付页面或支付接口的入口
+        String payUrl = "http://" + address + "/pay?orderNo=" + orderNo;
+
+        // 生成二维码保存路径
+        String filePath = Constant.FILE_UPLOAD_DIR + orderNo + ".png";
+
+        // 生成二维码图片
+        try {
+            QRCodeGenerator.generateQRCodeImage(payUrl, 350, 350, filePath);
+        } catch (WriterException | IOException e) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.QRCODE_FAILED);
+        }
+
+        // 构造二维码图片的访问链接，假设图片存储在服务器的 /images/ 目录下
+        String pngAddress = "http://" + address + "/images/" + orderNo + ".png";
+
+        return pngAddress;
     }
 }
