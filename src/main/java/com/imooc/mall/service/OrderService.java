@@ -29,4 +29,7 @@ public interface OrderService {
 
     // 生成订单支付的二维码图片
     String qrcode(String orderNo) throws ImoocMallException, IOException, WriterException;
+
+    // 后台获取订单列表
+    PageInfo listForAdmin(Integer pageNum, Integer pageSize) throws ImoocMallException;
 }

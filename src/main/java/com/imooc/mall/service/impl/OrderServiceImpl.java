@@ -411,4 +411,27 @@ public class OrderServiceImpl implements OrderService {
 
         return pngAddress;
     }
+
+    /**
+     * 后台获取订单列表
+     *
+     * @param pageNum  分页：当前页码
+     * @param pageSize 分页：每页显示的记录数
+     * @return 分页对象
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public PageInfo listForAdmin(Integer pageNum, Integer pageSize) throws ImoocMallException {
+        PageHelper.startPage(pageNum, pageSize);
+
+        // Order列表 --> OrderVO列表
+        List<Order> orderList = orderMapper.selectAllForAdmin(); // 只包含当前页的数据
+        List<OrderVO> orderVOList = orderListToOrderVOList(orderList);
+
+        // 包装为PageInfo对象
+        PageInfo pageInfo = new PageInfo<>(orderList); // orderVOList 覆盖默认的orderList
+        pageInfo.setList(orderVOList);
+
+        return pageInfo;
+    }
 }
