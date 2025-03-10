@@ -51,4 +51,21 @@ public class OrderAdminController {
         orderService.deliver(orderNo);
         return ApiRestResponse.success();
     }
+
+    /**
+     * 完结订单
+     * 管理员和用户都可调用
+     * 0：用户已取消，10：未付款（初始状态），20：已付款，30：已发货，40：交易完成
+     *
+     * @param orderNo 订单号
+     * @return 无
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("完结订单")
+    @PostMapping("/order/finish")
+    @ResponseBody
+    public ApiRestResponse finish(@RequestParam String orderNo) throws ImoocMallException {
+        orderService.finish(orderNo);
+        return ApiRestResponse.success();
+    }
 }

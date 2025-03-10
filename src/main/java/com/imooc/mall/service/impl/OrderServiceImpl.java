@@ -20,6 +20,7 @@ import com.imooc.mall.model.vo.OrderItemVO;
 import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.CartService;
 import com.imooc.mall.service.OrderService;
+import com.imooc.mall.service.UserService;
 import com.imooc.mall.util.OrderCodeFactory;
 import com.imooc.mall.util.QRCodeGenerator;
 import org.springframework.beans.BeanUtils;
@@ -56,6 +57,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Value("${file.upload.ip}")
     String ip;
+
+    @Autowired
+    UserService userService;
 
     /**
      * 生成订单
@@ -479,6 +483,38 @@ public class OrderServiceImpl implements OrderService {
         if (order.getOrderStatus() == Constant.OrderStatusEnum.PAID.getCode()) {
             order.setOrderStatus(Constant.OrderStatusEnum.DELIVERED.getCode());
             order.setDeliveryTime(new Date());
+
+            orderMapper.updateByPrimaryKeySelective(order); // 更新订单
+        } else {
+            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS);
+        }
+
+    }
+
+    /**
+     * 完结订单
+     * 用户、后台都可以完结订单
+     *
+     * @param orderNo 订单号
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public void finish(String orderNo) throws ImoocMallException {
+        // 查询订单
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+
+        // 如果是用户，就校验订单所属
+        if (!userService.checkAdminRole(UserFilter.currentUser) && !order.getUserId().equals(UserFilter.currentUser.getId())) { // 若是用户，但不是自己的订单，则抛出异常
+            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+
+        // 修改订单状态
+        if (order.getOrderStatus() == Constant.OrderStatusEnum.DELIVERED.getCode()) {
+            order.setOrderStatus(Constant.OrderStatusEnum.FINISHED.getCode()); // 订单状态码
+            order.setEndTime(new Date()); // 订单结束时间
 
             orderMapper.updateByPrimaryKeySelective(order); // 更新订单
         } else {

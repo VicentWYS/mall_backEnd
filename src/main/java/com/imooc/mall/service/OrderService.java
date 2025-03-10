@@ -38,4 +38,7 @@ public interface OrderService {
 
     // 后台订单发货
     void deliver(String orderNo) throws ImoocMallException;
+
+    // 完结订单
+    void finish(String orderNo) throws ImoocMallException;
 }
