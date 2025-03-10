@@ -460,4 +460,31 @@ public class OrderServiceImpl implements OrderService {
         }
 
     }
+
+    /**
+     * 后台订单发货
+     *
+     * @param orderNo 订单号
+     * @throws ImoocMallException 业务异常
+     */
+    @Override
+    public void deliver(String orderNo) throws ImoocMallException {
+        // 查询订单
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+
+        // 修改订单状态（订单状态码，发货时间）
+        if (order.getOrderStatus() == Constant.OrderStatusEnum.PAID.getCode()) {
+            order.setOrderStatus(Constant.OrderStatusEnum.DELIVERED.getCode());
+            order.setDeliveryTime(new Date());
+
+            orderMapper.updateByPrimaryKeySelective(order); // 更新订单
+        } else {
+            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS);
+        }
+
+    }
+
 }

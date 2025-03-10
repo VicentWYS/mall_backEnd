@@ -35,4 +35,7 @@ public interface OrderService {
 
     // 支付订单
     void pay(String orderNo) throws ImoocMallException;
+
+    // 后台订单发货
+    void deliver(String orderNo) throws ImoocMallException;
 }
