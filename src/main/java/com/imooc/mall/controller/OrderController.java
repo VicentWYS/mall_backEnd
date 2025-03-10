@@ -95,4 +95,19 @@ public class OrderController {
         String qrcodeAddress = orderService.qrcode(orderNo);
         return ApiRestResponse.success(qrcodeAddress);
     }
+
+    /**
+     * 支付订单
+     *
+     * @param orderNo 订单号
+     * @return 无
+     * @throws ImoocMallException 业务异常
+     */
+    @ApiOperation("支付订单")
+    @PostMapping("/pay")
+    @ResponseBody
+    public ApiRestResponse pay(@RequestParam String orderNo) throws ImoocMallException {
+        orderService.pay(orderNo);
+        return ApiRestResponse.success();
+    }
 }

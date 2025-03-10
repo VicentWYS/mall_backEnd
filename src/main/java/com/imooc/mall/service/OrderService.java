@@ -32,4 +32,7 @@ public interface OrderService {
 
     // 后台获取订单列表
     PageInfo listForAdmin(Integer pageNum, Integer pageSize) throws ImoocMallException;
+
+    // 支付订单
+    void pay(String orderNo) throws ImoocMallException;
 }
