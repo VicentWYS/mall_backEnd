@@ -1,5 +1,6 @@
 package com.imooc.mall.model.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
  * 保存从数据库读取出来的商品分类信息
  * 比实体类多出一个对象列表，用来存放子树
  */
-public class CategoryVO {
+public class CategoryVO implements Serializable {
     private Integer id;
 
     private String name;

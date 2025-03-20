@@ -11,6 +11,7 @@ import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -96,6 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 分类id列表
      */
     @Override
+    @Cacheable(value = "listCategoryForCustomer")
     public List<CategoryVO> listCategoryForCustomer(Integer parentId) {
         // 结果分类列表
         ArrayList<CategoryVO> categoryVOList = new ArrayList<>();
