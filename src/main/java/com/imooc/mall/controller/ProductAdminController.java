@@ -72,7 +72,7 @@ public class ProductAdminController {
 
         // 创建目录及文件
         File fileDirectory = new File(Constant.FILE_UPLOAD_DIR); // 创建目录对象
-        File destFile = new File(fileDirectory + "\\" + newFileName); // 创建目标文件对象
+
         // 检测目录是否存在
         if (!fileDirectory.exists()) { // 若目录不存在
             // 新建目录
@@ -82,6 +82,11 @@ public class ProductAdminController {
         }
 
         // 写入文件
+        // File destFile = new File(fileDirectory + "\\" + newFileName); // 【Windows开发环境】创建目标文件对象
+        File destFile = new File(fileDirectory + "/" + newFileName); // 【线上Linux环境】创建目标文件对象
+
+        // System.out.println("上传图片的地址：" + destFile.getPath());
+
         try {
             file.transferTo(destFile); // 将上传的文件内容写入到目标文件中
         } catch (IOException e) {

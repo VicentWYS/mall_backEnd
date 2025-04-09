@@ -2,7 +2,10 @@
 <Configuration status="fatal">
     <Properties>
         <!--日志文件输出地址-->
-        <Property name="baseDir" value="D:\Me\Project\imooc_mall\code\logs"/>
+        <!--本地Windows开发环境-->
+        <!--<Property name="baseDir" value="D:\Me\Project\imooc_mall\code\logs"/>-->
+        <!--线上Linux环境-->
+        <Property name="baseDir" value="/home/wys/proj/logs"/>
     </Properties>
 
     <Appenders>
